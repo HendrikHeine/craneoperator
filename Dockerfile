@@ -3,10 +3,11 @@
 # https://docs.docker.com/reference/builder/
 
 FROM ruby:2.6.0-alpine
-MAINTAINER Mike Heijmans <parabuzzle@gmail.com>
+LABEL MAINTAINER="Mike Heijmans <parabuzzle@gmail.com>"
 
 # Add env variables
 ENV PORT=80 \
+    NODE_VERSION=14.15.0 \
     REGISTRY_HOST=localhost \
     REGISTRY_PORT=5000 \
     REGISTRY_PROTOCOL=https \
@@ -22,7 +23,7 @@ WORKDIR $APP_HOME
 COPY . $APP_HOME
 
 RUN apk add --update nodejs g++ musl-dev make linux-headers yarn && \
-    yarn install && \
+    yarn install --ignore-platform --ignore-engines && \
     node_modules/.bin/webpack && \
     rm -rf node_modules && \
     bundle install --deployment && \
