@@ -1,13 +1,14 @@
 # This docker file sets up the rails app container
 #
 # https://docs.docker.com/reference/builder/
+ARG NODE_VERSION=18.16.0
 
-FROM ruby:2.6.0-alpine
+# FROM node:${NODE_VERSION}-alpine AS node
+FROM ruby:3.0.2-alpine
 LABEL MAINTAINER="Mike Heijmans <parabuzzle@gmail.com>"
 
 # Add env variables
 ENV PORT=80 \
-    NODE_VERSION=14.15.0 \
     REGISTRY_HOST=localhost \
     REGISTRY_PORT=5000 \
     REGISTRY_PROTOCOL=https \
@@ -22,11 +23,21 @@ WORKDIR $APP_HOME
 # Add the app
 COPY . $APP_HOME
 
-RUN apk add --update nodejs g++ musl-dev make linux-headers yarn && \
-    yarn install --ignore-platform --ignore-engines && \
-    node_modules/.bin/webpack && \
-    rm -rf node_modules && \
-    bundle install --deployment && \
+RUN apk add wget
+
+RUN wget https://unofficial-builds.nodejs.org/download/release/v12.22.3/node-v12.22.3-linux-x64-musl.tar.gz
+RUN tar -xvf node-v12.22.3-linux-x64-musl.tar.gz
+RUN rm node-v12.22.3-linux-x64-musl.tar.gz
+
+RUN ln -s /var/www/node-v12.22.3-linux-x64-musl/bin/node /usr/bin/node
+RUN ln -s /var/www/node-v12.22.3-linux-x64-musl/bin/npm /usr/bin/npm
+
+RUN apk add --update yarn g++ musl-dev make linux-headers && \
+    yarn install && \
+    node_modules/.bin/webpack
+
+RUN rm -rf node_modules && \
+    bundle install && \
     apk del nodejs g++ musl-dev make linux-headers
 
 # Run the app

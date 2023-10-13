@@ -75,6 +75,7 @@ export default class ImageInfo extends React.Component {
             </div>
             <TitleValue title="Architecture" value={this.props.info.architecture}/>
             <TitleValue title="OS" value={this.props.info.information && this.props.info.information.os}/>
+            <TitleValue title="Size" value={"42MB"}/>
             <TitleValue title="Created">
               <TimeDisplay time={this.props.info.information && this.props.info.information.created_millis}/>
             </TitleValue>

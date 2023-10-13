@@ -4,8 +4,7 @@
   "description": "The Docker Registry Viewer",
   "main": "bundle.js",
   "dependencies": {
-    "axios": "0.21.1",
-    "fsevents": "^2.3",
+    "axios": "^0.8.0",
     "babel-core": "^6.3.13",
     "babel-loader": "^6.2.0",
     "babel-preset-es2015": "^6.3.13",
